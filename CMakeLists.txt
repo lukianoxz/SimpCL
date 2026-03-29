@@ -4,10 +4,11 @@ project(SimpCL)
 
 add_library(simpcl STATIC
     src/vector.c
+    src/string.c
 )
 
 target_include_directories(simpcl PUBLIC include)
 
-add_executable(Executable tests/vector_test.c)
+add_executable(Executable tests/string_test.c)
 
 target_link_libraries(Executable PRIVATE simpcl)

@@ -1,4 +1,4 @@
 all:
 	rm -rf build
 	mkdir build
-	cd build && cmake .. && make && ./Executable
+	cd build && cmake .. && make && clear && ./Executable
