@@ -2,9 +2,13 @@
 #define SCL_VECTOR_H
 
 #include <stdlib.h> // for size_t
+#include <stdint.h> // for uint8_t
+#include <simpcl/error.h> // for error status
 
 // opaque struct
-struct scl_vector;
+struct scl_vector {
+    uint8_t error;
+};
 
 // life cycle
 struct scl_vector *scl_new_vector(size_t type_size);
@@ -14,6 +18,10 @@ void               scl_destroy_vector(struct scl_vector *vector);
 size_t             scl_vector_size(const struct scl_vector *vector);
 int                scl_vector_is_empty(struct scl_vector *vector);
 
+// access
+void              *scl_vector_at(struct scl_vector *vector, size_t index);
+void               scl_vector_copy_element(struct scl_vector *vector, size_t index, void *out_dest);
+
 // insertion
 void               scl_vector_push(struct scl_vector *vector, void *element);
 void               scl_vector_concat(struct scl_vector *vector, struct scl_vector *other);
@@ -22,10 +30,6 @@ void               scl_vector_concat(struct scl_vector *vector, struct scl_vecto
 void               scl_vector_pop(struct scl_vector *vector, void *out_dest);
 void               scl_vector_remove_at(struct scl_vector *vector, size_t index, void *out_dest);
 void               scl_vector_clear(struct scl_vector *vector);
-
-// access
-void              *scl_vector_at(struct scl_vector *vector, size_t index);
-void               scl_vector_copy_element(struct scl_vector *vector, size_t index, void *out_dest);
 
 // memory
 void               scl_vector_reserve(struct scl_vector *vector, size_t reserve);

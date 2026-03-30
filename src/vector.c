@@ -7,16 +7,28 @@ struct scl_vector {
     size_t size;
     size_t capacity;
     size_t type_size;
+    uint8_t error;
 };
 
+// life cycle
 struct scl_vector *scl_new_vector(size_t type_size) {
     struct scl_vector *vector = (struct scl_vector *)malloc(sizeof(struct scl_vector));
+
+    if (!vector) {
+        return NULL;
+    }
 
     vector->size = 0;
     vector->capacity = 16;
     vector->type_size = type_size;
+    vector->error = SCL_OK;
 
     vector->data = (void *)malloc(vector->type_size * vector->capacity);
+
+    if (!vector->data) {
+        free(vector);
+        return NULL;
+    }
 
     return vector;
 }
@@ -26,16 +38,33 @@ void scl_destroy_vector(struct scl_vector *vector) {
     free(vector);
 }
 
+// information
 size_t scl_vector_size(const struct scl_vector *vector) {
     return vector->size;
 }
 
-void *scl_vector_at(struct scl_vector *vector, size_t index) {
-    if (index >= vector->size) return NULL;
+int scl_vector_is_empty(struct scl_vector *vector) {
+    return !vector->size;
+}
 
+// access
+void *scl_vector_at(struct scl_vector *vector, size_t index) {
+    if (index >= vector->size) {vector->error = SCL_ERR_OUT_OF_BOUNDS; return NULL;}
+
+    vector->error = SCL_OK;
     return (char *)vector->data + (index * vector->type_size);
 }
 
+void scl_vector_copy_element(struct scl_vector *vector, size_t index, void *out_dest) {
+    if (index >= vector->size) {vector->error = SCL_ERR_OUT_OF_BOUNDS; return;}
+
+    void *element_target = scl_vector_at(vector, index);
+
+    memcpy(out_dest, element_target, vector->type_size);
+    vector->error = SCL_OK;
+}
+
+// insertion
 void scl_vector_push(struct scl_vector *vector, void *element) {
     if (vector->size == vector->capacity) {
         size_t new_capacity = vector->capacity * 2;
@@ -44,6 +73,9 @@ void scl_vector_push(struct scl_vector *vector, void *element) {
         if (new_data) {
             vector->data = new_data;
             vector->capacity = new_capacity;
+        } else {
+            vector->error = SCL_ERR_ALLOC;
+            return;
         }
     }
 
@@ -52,17 +84,7 @@ void scl_vector_push(struct scl_vector *vector, void *element) {
     memcpy(target, element, vector->type_size);
 
     vector->size++;
-}
-
-void scl_vector_reserve(struct scl_vector *vector, size_t reserve) {
-    if (vector->capacity >= reserve) return;
-
-    void *new_data = realloc(vector->data, vector->type_size * reserve);
-
-    if (new_data) {
-        vector->capacity = reserve;
-        vector->data = new_data;
-    }
+    vector->error = SCL_OK;
 }
 
 void scl_vector_concat(struct scl_vector *vector, struct scl_vector *other) {
@@ -75,31 +97,17 @@ void scl_vector_concat(struct scl_vector *vector, struct scl_vector *other) {
     }
 }
 
-int scl_vector_is_empty(struct scl_vector *vector) {
-    return !vector->size;
-}
-
+// removal
 void scl_vector_pop(struct scl_vector *vector, void *out_dest) {
-    if (vector->size == 0) return NULL;
+    if (vector->size == 0) {vector->error = SCL_ERR_EMPTY; return;}
 
     scl_vector_copy_element(vector, vector->size - 1, out_dest);
     vector->size--;
-}
-
-void scl_vector_clear(struct scl_vector *vector) {
-    vector->size = 0;
-}
-
-void scl_vector_copy_element(struct scl_vector *vector, size_t index, void *out_dest) {
-    if (index >= vector->size) return NULL;
-
-    void *element_target = scl_vector_at(vector, index);
-
-    memcpy(out_dest, element_target, vector->type_size);
+    vector->error = SCL_OK;
 }
 
 void scl_vector_remove_at(struct scl_vector *vector, size_t index, void *out_dest) {
-    if (index >= vector->size) return NULL;
+    if (index >= vector->size) {vector->error = SCL_ERR_OUT_OF_BOUNDS; return;}
 
     scl_vector_copy_element(vector, index, out_dest);
 
@@ -109,6 +117,23 @@ void scl_vector_remove_at(struct scl_vector *vector, size_t index, void *out_des
     memmove(target, copy_target, vector->type_size * ((vector->size - 1) - index));
 
     vector->size--;
+    vector->error = SCL_OK;
+}
+
+void scl_vector_clear(struct scl_vector *vector) {
+    vector->size = 0;
+}
+
+// memory
+void scl_vector_reserve(struct scl_vector *vector, size_t reserve) {
+    if (vector->capacity >= reserve) return;
+
+    void *new_data = realloc(vector->data, vector->type_size * reserve);
+
+    if (new_data) {
+        vector->capacity = reserve;
+        vector->data = new_data;
+    }
 }
 
 void scl_vector_shrink(struct scl_vector *vector) {
