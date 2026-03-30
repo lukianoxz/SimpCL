@@ -9,6 +9,6 @@ add_library(simpcl STATIC
 
 target_include_directories(simpcl PUBLIC include)
 
-add_executable(Executable tests/string_test.c)
+add_executable(Executable tests/vector_test.c)
 
 target_link_libraries(Executable PRIVATE simpcl)

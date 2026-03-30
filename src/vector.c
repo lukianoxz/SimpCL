@@ -26,14 +26,14 @@ void scl_destroy_vector(struct scl_vector *vector) {
     free(vector);
 }
 
-void *scl_vector_get(struct scl_vector *vector, size_t index) {
+size_t scl_vector_size(const struct scl_vector *vector) {
+    return vector->size;
+}
+
+void *scl_vector_at(struct scl_vector *vector, size_t index) {
     if (index >= vector->size) return NULL;
 
     return (char *)vector->data + (index * vector->type_size);
-}
-
-size_t scl_vector_size(const struct scl_vector *vector) {
-    return vector->size;
 }
 
 void scl_vector_push(struct scl_vector *vector, void *element) {
@@ -71,7 +71,7 @@ void scl_vector_concat(struct scl_vector *vector, struct scl_vector *other) {
     size_t other_size = other->size; // self concat protection
     
     for (size_t i = 0; i < other_size; i++) {
-        scl_vector_push(vector, scl_vector_get(other, i));
+        scl_vector_push(vector, scl_vector_at(other, i));
     }
 }
 
@@ -79,33 +79,29 @@ int scl_vector_is_empty(struct scl_vector *vector) {
     return !vector->size;
 }
 
-void *scl_vector_pop(struct scl_vector *vector) {
+void scl_vector_pop(struct scl_vector *vector, void *out_dest) {
     if (vector->size == 0) return NULL;
 
-    void *return_element = scl_vector_copy_element(vector, vector->size - 1);
+    scl_vector_copy_element(vector, vector->size - 1, out_dest);
     vector->size--;
-    return return_element;
 }
 
 void scl_vector_clear(struct scl_vector *vector) {
     vector->size = 0;
 }
 
-void *scl_vector_copy_element(struct scl_vector *vector, size_t index) {
+void scl_vector_copy_element(struct scl_vector *vector, size_t index, void *out_dest) {
     if (index >= vector->size) return NULL;
-    
-    void *return_value = (void *)malloc(vector->type_size);
-    void *element_target = scl_vector_get(vector, index);
 
-    memcpy(return_value, element_target, vector->type_size);
+    void *element_target = scl_vector_at(vector, index);
 
-    return return_value;
+    memcpy(out_dest, element_target, vector->type_size);
 }
 
-void *scl_vector_remove_at(struct scl_vector *vector, size_t index) {
+void scl_vector_remove_at(struct scl_vector *vector, size_t index, void *out_dest) {
     if (index >= vector->size) return NULL;
 
-    void *return_value = scl_vector_copy_element(vector, index);
+    scl_vector_copy_element(vector, index, out_dest);
 
     void *target = (char *)vector->data + (vector->type_size * index);
     void *copy_target = (char *)vector->data + (vector->type_size * (index + 1));
@@ -113,8 +109,6 @@ void *scl_vector_remove_at(struct scl_vector *vector, size_t index) {
     memmove(target, copy_target, vector->type_size * ((vector->size - 1) - index));
 
     vector->size--;
-
-    return return_value;
 }
 
 void scl_vector_shrink(struct scl_vector *vector) {
