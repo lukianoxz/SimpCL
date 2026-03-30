@@ -6,9 +6,7 @@
 #include <simpcl/error.h> // for error status
 
 // opaque struct
-struct scl_vector {
-    uint8_t error;
-};
+struct scl_vector;
 
 // life cycle
 struct scl_vector *scl_new_vector(size_t type_size);
@@ -17,6 +15,7 @@ void               scl_destroy_vector(struct scl_vector *vector);
 // information
 size_t             scl_vector_size(const struct scl_vector *vector);
 int                scl_vector_is_empty(struct scl_vector *vector);
+enum scl_error     scl_vector_error(struct scl_vector *vector);
 
 // access
 void              *scl_vector_at(struct scl_vector *vector, size_t index);

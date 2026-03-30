@@ -47,6 +47,10 @@ int scl_vector_is_empty(struct scl_vector *vector) {
     return !vector->size;
 }
 
+enum scl_error scl_vector_error(struct scl_vector *vector) {
+    return vector->error;
+}
+
 // access
 void *scl_vector_at(struct scl_vector *vector, size_t index) {
     if (index >= vector->size) {vector->error = SCL_ERR_OUT_OF_BOUNDS; return NULL;}
