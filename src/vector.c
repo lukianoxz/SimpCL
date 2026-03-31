@@ -88,10 +88,11 @@ enum scl_error scl_vector_concat(struct scl_vector *vector, struct scl_vector *o
         return SCL_ERR_ALLOC;
     }
 
-    size_t other_size = other->type_size * (other->size - 1);
-    void *target = (char *)vector->data + (vector->type_size * (vector->size - 1));
+    size_t other_size = other->type_size * other->size;
+    void *target = (char *)vector->data + (vector->type_size * vector->size);
 
     memcpy(target, other->data, other_size);
+    vector->size += other->size;
 
     return SCL_OK;
 }
