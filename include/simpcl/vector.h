@@ -15,23 +15,22 @@ void               scl_destroy_vector(struct scl_vector *vector);
 // information
 size_t             scl_vector_size(const struct scl_vector *vector);
 int                scl_vector_is_empty(struct scl_vector *vector);
-enum scl_error     scl_vector_error(struct scl_vector *vector);
 
 // access
 void              *scl_vector_at(struct scl_vector *vector, size_t index);
-void               scl_vector_copy_element(struct scl_vector *vector, size_t index, void *out_dest);
+enum scl_error     scl_vector_copy_element(struct scl_vector *vector, size_t index, void *out_dest);
 
 // insertion
-void               scl_vector_push(struct scl_vector *vector, void *element);
-void               scl_vector_concat(struct scl_vector *vector, struct scl_vector *other);
+enum scl_error     scl_vector_push(struct scl_vector *vector, void *element);
+enum scl_error     scl_vector_concat(struct scl_vector *vector, struct scl_vector *other);
 
 // removal
-void               scl_vector_pop(struct scl_vector *vector, void *out_dest);
-void               scl_vector_remove_at(struct scl_vector *vector, size_t index, void *out_dest);
+enum scl_error     scl_vector_pop(struct scl_vector *vector, void *out_dest);
+enum scl_error     scl_vector_remove_at(struct scl_vector *vector, size_t index, void *out_dest);
 void               scl_vector_clear(struct scl_vector *vector);
 
 // memory
-void               scl_vector_reserve(struct scl_vector *vector, size_t reserve);
+enum scl_error     scl_vector_reserve(struct scl_vector *vector, size_t reserve);
 void               scl_vector_shrink(struct scl_vector *vector);
 
 #endif

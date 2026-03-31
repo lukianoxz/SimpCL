@@ -1,8 +1,3 @@
-A simple C library
-
-## code example:
-
-```c
 #include <simpcl/vector.h>
 #include <simpcl/utils.h>
 
@@ -19,4 +14,3 @@ int main() {
 
     return 0;
 }
-```
