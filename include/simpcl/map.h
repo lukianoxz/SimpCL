@@ -7,7 +7,7 @@
 struct scl_map;
 
 struct scl_map_data {
-    void *key, *value
+    void *key, *value;
 };
 
 // life cycle
