@@ -32,6 +32,7 @@ struct scl_vector *scl_new_vector(size_t type_size) {
 }
 
 void scl_destroy_vector(struct scl_vector *vector) {
+    if (!vector) return;
     free(vector->data);
     free(vector);
 }
@@ -101,7 +102,9 @@ enum scl_error scl_vector_concat(struct scl_vector *vector, struct scl_vector *o
 enum scl_error scl_vector_pop(struct scl_vector *vector, void *out_dest) {
     if (!vector->size) return SCL_ERR_EMPTY;
 
-    scl_vector_copy_element(vector, vector->size - 1, out_dest);
+    if (out_dest) {
+        scl_vector_copy_element(vector, vector->size - 1, out_dest);
+    }
     vector->size--;
     return SCL_OK;
 }
@@ -109,7 +112,9 @@ enum scl_error scl_vector_pop(struct scl_vector *vector, void *out_dest) {
 enum scl_error scl_vector_remove_at(struct scl_vector *vector, size_t index, void *out_dest) {
     if (index >= vector->size) return SCL_ERR_OUT_OF_BOUNDS;
 
-    scl_vector_copy_element(vector, index, out_dest);
+    if (out_dest) {
+        scl_vector_copy_element(vector, index, out_dest);
+    }
 
     void *target = (char *)vector->data + (vector->type_size * index);
     void *copy_target = (char *)vector->data + (vector->type_size * (index + 1));

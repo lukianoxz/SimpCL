@@ -3,6 +3,7 @@
 
 #include <simpcl/vector.h>
 #include <stdio.h>
+#include <string.h>
 
 // opaque struct
 struct scl_string;
