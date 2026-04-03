@@ -15,6 +15,7 @@ void               scl_destroy_vector(struct scl_vector *vector);
 // information
 size_t             scl_vector_size(const struct scl_vector *vector);
 int                scl_vector_is_empty(struct scl_vector *vector);
+size_t             scl_vector_capacity_left(struct scl_vector *vector);
 
 // access
 void              *scl_vector_at(struct scl_vector *vector, size_t index);

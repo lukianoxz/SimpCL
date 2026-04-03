@@ -46,6 +46,10 @@ int scl_vector_is_empty(struct scl_vector *vector) {
     return !vector->size;
 }
 
+size_t scl_vector_capacity_left(struct scl_vector *vector) {
+    return vector->capacity - vector->size;
+}
+
 // access
 void *scl_vector_at(struct scl_vector *vector, size_t index) {
     if (index >= vector->size) return NULL;

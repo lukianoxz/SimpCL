@@ -30,12 +30,10 @@ void scl_destroy_string(struct scl_string *string) {
 
 // edit functions
 void scl_string_clear(struct scl_string *string) {
-    if (!string) return;
     scl_vector_clear(string->data);
 }
 
 void scl_string_append_cstring(struct scl_string *string, const char *c_string) {
-    if (!string) return;
     size_t cstring_size = strlen(c_string);
 
     for (size_t i = 0; i < cstring_size; i++) {
@@ -45,7 +43,6 @@ void scl_string_append_cstring(struct scl_string *string, const char *c_string) 
 
 // I/O
 void scl_string_print(struct scl_string *string) {
-    if (!string) return;
     char terminator = '\0';
     scl_vector_push(string->data, &terminator);
 
@@ -55,7 +52,6 @@ void scl_string_print(struct scl_string *string) {
 }
 
 void scl_string_readline(struct scl_string *string) {
-    if (!string) return;
     char c;
 
     while ((c = getchar()) != '\n' && c != EOF) {
