@@ -8,6 +8,7 @@ set(COMPILE_TARGET "" CACHE STRING "Type here the file to compile: ")
 add_library(simpcl STATIC
     src/vector.c
     src/string.c
+    src/map.c
 )
 
 target_include_directories(simpcl PUBLIC include)
